@@ -523,7 +523,7 @@ public class BrowserProvider2 extends SQLiteContentProvider {
                             BookmarkColumns.URL, // 0
                             BookmarkColumns.TITLE, // 1
                             BookmarkColumns.FAVICON, // 2
-                            BookmarkColumns.TOUCH_ICON, // 3
+                            "touch_icon",//BookmarkColumns.TOUCH_ICON, // 3
                             BookmarkColumns.CREATED, // 4
                             }, BookmarkColumns.BOOKMARK + "!=0", null,
                             null, null, null);
@@ -1430,7 +1430,7 @@ public class BrowserProvider2 extends SQLiteContentProvider {
                 match = BOOKMARKS;
                 values.remove(BookmarkColumns.DATE);
                 values.remove(BookmarkColumns.VISITS);
-                values.remove(BookmarkColumns.USER_ENTERED);
+                values.remove("user_entered");//BookmarkColumns.USER_ENTERED);
                 values.put(Bookmarks.IS_FOLDER, 0);
             }
         }
@@ -1687,7 +1687,7 @@ public class BrowserProvider2 extends SQLiteContentProvider {
                 }
                 values.remove(BookmarkColumns.DATE);
                 values.remove(BookmarkColumns.VISITS);
-                values.remove(BookmarkColumns.USER_ENTERED);
+                values.remove("user_entered");//BookmarkColumns.USER_ENTERED);
             }
         }
         int modified = 0;

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="D:\work\github_open_source\platform_packages_apps_browser\assets"><file name="html/flashtest.html" path="D:\work\github_open_source\platform_packages_apps_browser\assets\html\flashtest.html"/></source></dataSet><dataSet config="debug"><source path="D:\work\github_open_source\platform_packages_apps_browser\src\debug\assets"/></dataSet></merger>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/D:/work/github_open_source/platform_packages_apps_browser/res/values-w720dp/bools.xml -->
+    <eat-comment/>
+    <bool name="hide_nav_buttons">false</bool>
+    <!-- From: file:/D:/work/github_open_source/platform_packages_apps_browser/res/values-w720dp/dimensions.xml -->
+    <eat-comment/>
+    <dimen name="tab_width">240dp</dimen>
+</resources>

@@ -34,6 +34,10 @@ import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
+
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Handle download requests
  */
@@ -211,7 +215,15 @@ public class DownloadHandler {
         request.setDescription(webAddress.getHost());
         // XXX: Have to use the old url since the cookies were stored using the
         // old percent-encoded url.
-        String cookies = CookieManager.getInstance().getCookie(url, privateBrowsing);
+        //String cookies = CookieManager.getInstance().getCookie(url, privateBrowsing); TODO XXX
+        String cookies;
+        try {
+            cookies = (String) MethodUtils.invokeMethod(CookieManager.getInstance(), "getCookie", url, privateBrowsing);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+
         request.addRequestHeader("cookie", cookies);
         request.addRequestHeader("User-Agent", userAgent);
         request.addRequestHeader("Referer", referer);

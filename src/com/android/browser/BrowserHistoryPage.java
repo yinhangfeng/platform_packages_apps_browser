@@ -61,6 +61,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
+
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Activity for displaying the browser's history, divided into
  * days of viewing.
@@ -412,8 +416,15 @@ public class BrowserHistoryPage extends Fragment
                 }
                 return true;
             case R.id.share_link_context_menu_id:
-                Browser.sendString(activity, url,
-                        activity.getText(R.string.choosertitle_sharevia).toString());
+//                Browser.sendString(activity, url,
+//                        activity.getText(R.string.choosertitle_sharevia).toString());
+                //TODO XXX
+
+                try {
+                    MethodUtils.invokeStaticMethod(Browser.class, "sendString", (Context) activity, url, activity.getText(R.string.choosertitle_sharevia).toString());
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
                 return true;
             case R.id.copy_url_context_menu_id:
                 copy(url);

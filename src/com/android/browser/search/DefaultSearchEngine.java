@@ -30,6 +30,11 @@ import android.provider.Browser;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class DefaultSearchEngine implements SearchEngine {
 
     private static final String TAG = "DefaultSearchEngine";
@@ -46,7 +51,14 @@ public class DefaultSearchEngine implements SearchEngine {
     public static DefaultSearchEngine create(Context context) {
         SearchManager searchManager =
                 (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
-        ComponentName name = searchManager.getWebSearchActivity();
+
+        // ComponentName name = searchManager.getWebSearchActivity() TODO XXX
+        ComponentName name = null;
+        try {
+            name = (ComponentName) MethodUtils.invokeMethod(searchManager, "getWebSearchActivity");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         if (name == null) return null;
         SearchableInfo searchable = searchManager.getSearchableInfo(name);
         if (searchable == null) return null;
@@ -108,7 +120,15 @@ public class DefaultSearchEngine implements SearchEngine {
     public Cursor getSuggestions(Context context, String query) {
         SearchManager searchManager =
                 (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
-        return searchManager.getSuggestions(mSearchable, query);
+
+        //return searchManager.getSuggestions(mSearchable, query); TODO XXX
+
+        try {
+            return (Cursor) MethodUtils.invokeMethod(searchManager, "getSuggestions", mSearchable, query);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public boolean supportsSuggestions() {

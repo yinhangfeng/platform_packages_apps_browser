@@ -52,7 +52,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.browser.Tab.SecurityState;
-import com.android.internal.view.menu.MenuBuilder;
+import com.utils.MenuBuilderHelper;
+//import com.android.internal.view.menu.MenuBuilder;
 
 import java.util.List;
 
@@ -723,8 +724,7 @@ public abstract class BaseUi implements UI {
     @Override
     public Bitmap getDefaultVideoPoster() {
         if (mDefaultVideoPoster == null) {
-            mDefaultVideoPoster = BitmapFactory.decodeResource(
-                    mActivity.getResources(), R.drawable.default_video_poster);
+            mDefaultVideoPoster = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.default_video_poster);
         }
         return mDefaultVideoPoster;
     }
@@ -756,7 +756,8 @@ public abstract class BaseUi implements UI {
     }
 
     protected Menu getMenu() {
-        MenuBuilder menu = new MenuBuilder(mActivity);
+        //MenuBuilder menu = new MenuBuilder(mActivity); TODO XXX
+        Menu menu = MenuBuilderHelper.newInstance(mActivity);
         mActivity.getMenuInflater().inflate(R.menu.browser, menu);
         return menu;
     }

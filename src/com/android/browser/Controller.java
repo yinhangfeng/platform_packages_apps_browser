@@ -85,6 +85,8 @@ import com.android.browser.IntentHandler.UrlData;
 import com.android.browser.UI.ComboViews;
 import com.android.browser.provider.BrowserProvider2.Thumbnails;
 import com.android.browser.provider.SnapshotProvider.Snapshots;
+import com.utils.BrowserHelper;
+import com.utils.ReflectUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -592,8 +594,8 @@ public class Controller
         send.setType("text/plain");
         send.putExtra(Intent.EXTRA_TEXT, url);
         send.putExtra(Intent.EXTRA_SUBJECT, title);
-        send.putExtra(Browser.EXTRA_SHARE_FAVICON, favicon);
-        send.putExtra(Browser.EXTRA_SHARE_SCREENSHOT, screenshot);
+        send.putExtra(BrowserHelper.EXTRA_SHARE_FAVICON/*Browser.EXTRA_SHARE_FAVICON*/, favicon);
+        send.putExtra(BrowserHelper.EXTRA_SHARE_SCREENSHOT/*Browser.EXTRA_SHARE_SCREENSHOT*/, screenshot);
         try {
             c.startActivity(Intent.createChooser(send, c.getString(
                     R.string.choosertitle_sharevia)));
@@ -656,7 +658,9 @@ public class Controller
         mUi.onPause();
         mNetworkHandler.onPause();
 
-        WebView.disablePlatformNotifications();
+        //WebView.disablePlatformNotifications(); TODO XXX
+        ReflectUtils.invokeExactStaticMethod(WebView.class, "disablePlatformNotifications");
+
         NfcHandler.unregister(mActivity);
         if (sThumbnailBitmap != null) {
             sThumbnailBitmap.recycle();
@@ -706,7 +710,9 @@ public class Controller
 
         mUi.onResume();
         mNetworkHandler.onResume();
-        WebView.enablePlatformNotifications();
+        //WebView.enablePlatformNotifications(); TODO XXX
+        ReflectUtils.invokeExactStaticMethod(WebView.class, "enablePlatformNotifications");
+
         NfcHandler.register(mActivity, this);
         if (mVoiceResult != null) {
             mUi.onVoiceResult(mVoiceResult);
@@ -994,7 +1000,8 @@ public class Controller
                 new AsyncTask<Void, Void, String[]>() {
             @Override
             public String[] doInBackground(Void... unused) {
-                return Browser.getVisitedHistory(mActivity.getContentResolver());
+                //return Browser.getVisitedHistory(mActivity.getContentResolver()); TODO XXX
+                return BrowserHelper.getVisitedHistory(mActivity.getContentResolver());
             }
             @Override
             public void onPostExecute(String[] result) {
@@ -1025,7 +1032,7 @@ public class Controller
         if (username != null && password != null) {
             handler.proceed(username, password);
         } else {
-            if (tab.inForeground() && !handler.suppressDialog()) {
+            if (tab.inForeground() && !(Boolean) ReflectUtils.invokeMethod(handler, "suppressDialog")/*handler.suppressDialog() TODO XXX*/) {
                 mPageDialogsHandler.showHttpAuthentication(tab, handler, host, realm);
             } else {
                 handler.cancel();
@@ -1656,7 +1663,7 @@ public class Controller
                 break;
 
             case R.id.dump_nav_menu_id:
-                getCurrentTopWebView().debugDump();
+                //getCurrentTopWebView().debugDump();
                 break;
 
             case R.id.zoom_in_menu_id:
@@ -1921,7 +1928,7 @@ public class Controller
                 AddBookmarkPage.class);
         i.putExtra(BrowserContract.Bookmarks.URL, w.getUrl());
         i.putExtra(BrowserContract.Bookmarks.TITLE, w.getTitle());
-        String touchIconUrl = w.getTouchIconUrl();
+        String touchIconUrl = (String) ReflectUtils.invokeMethod(w, "getTouchIconUrl");//w.getTouchIconUrl(); TODO XXX
         if (touchIconUrl != null) {
             i.putExtra(AddBookmarkPage.TOUCH_ICON_URL, touchIconUrl);
             WebSettings settings = w.getSettings();
@@ -1976,7 +1983,7 @@ public class Controller
 
     static Bitmap createScreenshot(WebView view, int width, int height) {
         if (view == null || view.getContentHeight() == 0
-                || view.getContentWidth() == 0) {
+                || ReflectUtils.invokeMethod(view, "getContentWidth")/*view.getContentWidth() TODO XXX*/ == 0) {
             return null;
         }
         // We render to a bitmap 2x the desired size so that we can then
@@ -1995,7 +2002,7 @@ public class Controller
                     Bitmap.createBitmap(scaledWidth, scaledHeight, Bitmap.Config.RGB_565);
         }
         Canvas canvas = new Canvas(sThumbnailBitmap);
-        int contentWidth = view.getContentWidth();
+        int contentWidth = (int) ReflectUtils.invokeMethod(view, "getContentWidth");//view.getContentWidth();TODO XXX
         float overviewScale = scaledWidth / (view.getScale() * contentWidth);
         if (view instanceof BrowserWebView) {
             int dy = -((BrowserWebView)view).getTitleHeight();
@@ -2039,8 +2046,7 @@ public class Controller
             return;
         }
 
-        final Bitmap bm = createScreenshot(view, getDesiredThumbnailWidth(mActivity),
-                getDesiredThumbnailHeight(mActivity));
+        final Bitmap bm = createScreenshot(view, getDesiredThumbnailWidth(mActivity), getDesiredThumbnailHeight(mActivity));
         if (bm == null) {
             return;
         }

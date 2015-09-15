@@ -26,11 +26,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.FileUtils;
 import android.provider.BrowserContract;
 import android.text.TextUtils;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 
 public class SnapshotProvider extends ContentProvider {
 
@@ -125,7 +127,12 @@ public class SnapshotProvider extends ContentProvider {
             // Try to move
             if (!oldPath.renameTo(dbPath)) {
                 // Failed, do a copy
-                FileUtils.copyFile(oldPath, dbPath);
+                //FileUtils.copyFile(oldPath, dbPath); TODO xxx
+                try {
+                    FileUtils.copyFile(oldPath, dbPath);
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
             }
             // Cleanup
             oldPath.delete();

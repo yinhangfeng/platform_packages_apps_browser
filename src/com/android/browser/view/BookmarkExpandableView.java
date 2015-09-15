@@ -35,11 +35,13 @@ import android.widget.TextView;
 import com.android.browser.BreadCrumbView;
 import com.android.browser.BrowserBookmarksAdapter;
 import com.android.browser.R;
-import com.android.internal.view.menu.MenuBuilder;
+//import com.android.internal.view.menu.MenuBuilder;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -165,7 +167,13 @@ public class BookmarkExpandableView extends ExpandableListView
 
         // Sets the current menu info so all items added to menu will have
         // my extra info set.
-        ((MenuBuilder)menu).setCurrentMenuInfo(menuInfo);
+        //((MenuBuilder)menu).setCurrentMenuInfo(menuInfo); TODO XXX
+
+        try {
+            MethodUtils.invokeMethod(menu, "setCurrentMenuInfo", menuInfo);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
         onCreateContextMenu(menu);
         if (mOnCreateContextMenuListener != null) {
@@ -174,10 +182,20 @@ public class BookmarkExpandableView extends ExpandableListView
 
         // Clear the extra information so subsequent items that aren't mine don't
         // have my extra info.
-        ((MenuBuilder)menu).setCurrentMenuInfo(null);
+        //((MenuBuilder)menu).setCurrentMenuInfo(null); TODO XXX
 
-        if (mParent != null) {
-            mParent.createContextMenu(menu);
+        try {
+            MethodUtils.invokeMethod(menu, "setCurrentMenuInfo", null);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+//        if (mParent != null) {
+//            mParent.createContextMenu(menu);
+//        }
+        //TODO XXX
+        if(getParent() != null) {
+            getParent().createContextMenu(menu);
         }
     }
 
